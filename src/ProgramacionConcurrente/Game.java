@@ -9,7 +9,7 @@
  * 
  * Crear los buffers
  * Fabrica buffer ilimitado
- * Deposito buffer limitado
+ * Deposito buffer limitado 
  * Mercado buffer ilimitado
  * 
  * 
@@ -32,14 +32,19 @@ import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class Game extends JPanel {
-	Camion camion1 = new Camion(this, 120, 250, 0,"blanco");
-	Camion camion2 = new Camion(this, 240, 250, 0,"azul");
-	Camion camion3 = new Camion(this, 00, 10, 0, "blanco");
-	Camion camion4 = new Camion(this, 240, 10, 0, "azul");
+	Buffer buffer = new Buffer();
+	Camion camion1 = new Camion(this, 120, 250, 0,"blanco", buffer);
+	Camion camion2 = new Camion(this, 240, 250, 0,"azul", buffer);
+	Camion camion3 = new Camion(this, 00, 10, 0, "blanco", buffer);
+	Camion camion4 = new Camion(this, 240, 10, 0, "azul", buffer);
 	Mapa mapa = new Mapa(this);
 	Player player = new Player(this);
 	int score = 0;
 	ArrayList<Camion> camiones = new ArrayList<Camion>();
+	
+	private int bufferFabrica;
+	private int bufferMercado;
+	private int robos;
 
 	public Game() {
 		
@@ -48,6 +53,10 @@ public class Game extends JPanel {
 		camiones.add(camion3);
 		camiones.add(camion4);
 
+		bufferFabrica = 0;
+		bufferMercado = 0;
+		robos = 0;
+		
 		/*
 		 * Se crea una funcion anonima Listener es un objeto que
 		 * "escucha una interrupcion de teclado". El Listener se registra en el
@@ -88,16 +97,27 @@ public class Game extends JPanel {
 		
 	}
 
-	public int getScore() {
-		return score;
-	}
+	public void incrementBufferFabrica() {bufferFabrica ++;}
+	
+	public String getBufferFabrica() {return ""+bufferFabrica;}
+	
+	public void incrementBufferMercado() {bufferMercado ++;}
+	
+	public String getBufferMercado() {return ""+bufferMercado;}
+	
+	public String getBufferDeposito() {return buffer.getBuffer();}
+	
+	public void incrementRobos() {robos ++;}
+	
+	public String getRobos() {return ""+robos;}
+	
 
 	private void move() {
 		
 		player.move();
 		
 		for(Camion c:camiones){
-			if ((c.collision()) && (c.isCargado())) {
+			if ((c.collision()) && (c.isCargado()) && (!player.isCargado())) {
 				c.descargar();
 				player.cargar();
 			}
@@ -135,14 +155,13 @@ public class Game extends JPanel {
 		Graphics2D g2d = (Graphics2D) g;
 
 		mapa.paint(g2d); // Creamos un mapa
-
 		
 		player.paint(g2d); // Auto del jugador
 	
 		
 		// Pintamos los camiones, para ello primero seleccionamos el color
 		for(Camion c:camiones){
-			if (c.getName().equals("blanco")) {g2d.setColor(Color.WHITE);}
+			if (c.getName().equals("blanco")) {g2d.setColor(Color.ORANGE);}
 			if (c.getName().equals("azul")) {g2d.setColor(Color.BLUE);}
 			c.paint(g2d);
 		}
@@ -171,4 +190,8 @@ public class Game extends JPanel {
 								// los recursos.
 		}
 	}
+
+
+
+
 }

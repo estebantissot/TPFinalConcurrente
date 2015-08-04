@@ -71,5 +71,11 @@ public class Player {
 
 	public void cargar() {cargado = true;}
 	
-	public void descargar() {cargado = false;}
+	public void descargar() {
+		cargado = false;
+		game.incrementRobos();
+	}
+
+	public boolean isCargado() {return cargado;}
+	
 }

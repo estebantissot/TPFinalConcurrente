@@ -13,9 +13,11 @@ public class Camion implements Runnable {
 	private int x, y, xa,ya;
 	private boolean cargado, colision;
 	private String name;
+	private Buffer buffer;
 
-	public Camion(Game game, int x, int y, int contador, String name) {
+	public Camion(Game game, int x, int y, int contador, String name, Buffer buffer) {
 		//super(x,y,1,1);
+		this.buffer = buffer;
 		thread = new Thread(this);
 		thread.start();	
 		this.contador = contador;
@@ -113,13 +115,25 @@ public class Camion implements Runnable {
 		y = y + ya; //setPosY(getPosY() + getYA());
 		
 		if (name.equals("blanco")){
-			if ((Mapa.deposito.intersects(getBounds())) && (isCargado())) {descargar();}
-			if ((Mapa.fabrica.intersects(getBounds())) && (!isCargado())) {cargar();}
+			if ((Mapa.deposito.intersects(getBounds())) && (isCargado())) {
+				descargar();
+				buffer.put();
+			}
+			if ((Mapa.fabrica.intersects(getBounds())) && (!isCargado())) {
+				cargar();
+				game.incrementBufferFabrica();
+			}
 		}
 		
 		if (name.equals("azul")){
-			if ((Mapa.mercado.intersects(getBounds())) && (isCargado())) {descargar();}
-			if ((Mapa.deposito.intersects(getBounds())) && (!isCargado())) {cargar();}
+			if ((Mapa.mercado.intersects(getBounds())) && (isCargado())) {
+				descargar();
+				game.incrementBufferMercado();
+			}
+			if ((Mapa.deposito.intersects(getBounds())) && (!isCargado())) {
+				buffer.get();
+				cargar();
+			}
 		}
 	
 		
